@@ -79,6 +79,7 @@ import JourneyTimeline from './components/sections/JourneyTimeline';
 import RecoveryStories from './components/sections/RecoveryStories';
 
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import ForgotPassword from './pages/ForgotPassword';
 import VerifyCode from './pages/VerifyCode';
 import ResetPassword from './pages/ResetPassword';
@@ -113,10 +114,12 @@ export default function PulseXApp() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} /> {/* ⬅️ هنا يجب استخدام RegisterPage */}
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/verify-code" element={<VerifyCode />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/password-changed" element={<PasswordChanged />} />
+                    
                 </Routes>
             </div>
         </Router>

@@ -366,10 +366,12 @@ const Navbar = () => {
               <Link to="/login">
                 <Button variant="outline" className="w-[90px]">Log in</Button>
               </Link>
-              <Button variant="primary" className="w-[148px] group">
-                Get Started
-                <img src={nextIcon} alt="arrow" className="ml-[10px] w-[10px] h-[9px] transition-transform group-hover:translate-x-1" />
-              </Button>
+            <Link to="/register">
+                <Button variant="primary" className="w-[148px] group">
+                  Get Started
+                  <img src={nextIcon} alt="arrow" className="ml-[10px] w-[10px] h-[9px] transition-transform group-hover:translate-x-1" />
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -402,8 +404,13 @@ const Navbar = () => {
              <Link to="/login" className="w-full">
                 <Button variant="outline" className="w-full justify-center">Log in</Button>
              </Link>
-             <Button variant="primary" className="w-full justify-center">Get Started</Button>
-           </div>
+             <Link to="/register">
+                <Button variant="primary" className="w-[148px] group">
+                  Get Started
+                  <img src={nextIcon} alt="arrow" className="ml-[10px] w-[10px] h-[9px] transition-transform group-hover:translate-x-1" />
+                </Button>
+              </Link>
+              </div>
         </div>
       )}
     </nav>
