@@ -8,6 +8,7 @@ namespace PulseX.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
         private readonly AdminService _adminService;
@@ -17,8 +18,13 @@ namespace PulseX.API.Controllers
             _adminService = adminService;
         }
 
+        private int GetUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return int.Parse(userIdClaim!);
+        }
+
         [HttpGet("users")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUsers()
         {
             try
@@ -33,22 +39,16 @@ namespace PulseX.API.Controllers
         }
 
         [HttpPut("users/{userId}/status")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUserStatus(string userId, [FromBody] UpdateUserStatusDto statusDto)
         {
             try
             {
-                var adminId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(adminId))
-                    return Unauthorized(new { message = "Admin ID not found in token" });
+                var adminId = GetUserId();
 
                 if (!int.TryParse(userId, out int userIdInt))
                     return BadRequest(new { message = "Invalid user ID format" });
 
-                if (!int.TryParse(adminId, out int adminIdInt))
-                    return BadRequest(new { message = "Invalid admin ID format" });
-
-                var user = await _adminService.UpdateUserStatusAsync(userIdInt, statusDto, adminIdInt);
+                var user = await _adminService.UpdateUserStatusAsync(userIdInt, statusDto, adminId);
                 return Ok(new { message = "User status updated successfully", data = user });
             }
             catch (Exception ex)
@@ -58,7 +58,6 @@ namespace PulseX.API.Controllers
         }
 
         [HttpGet("activity-logs")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllActivityLogs()
         {
             try
@@ -73,7 +72,6 @@ namespace PulseX.API.Controllers
         }
 
         [HttpGet("activity-logs/{userId}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUserActivityLogs(string userId)
         {
             try
@@ -83,6 +81,53 @@ namespace PulseX.API.Controllers
 
                 var logs = await _adminService.GetUserActivityLogsAsync(userIdInt);
                 return Ok(logs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("doctors/pending")]
+        public async Task<IActionResult> GetPendingDoctors()
+        {
+            try
+            {
+                var doctors = await _adminService.GetPendingDoctorsAsync();
+                return Ok(doctors);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("doctors/{doctorId}/approve")]
+        public async Task<IActionResult> ApproveDoctor(int doctorId, [FromBody] ApproveDoctorDto dto)
+        {
+            try
+            {
+                var adminId = GetUserId();
+                var result = await _adminService.ApproveDoctorAsync(doctorId, adminId, dto);
+                return Ok(new 
+                { 
+                    message = dto.IsApproved ? "Doctor approved successfully" : "Doctor rejected",
+                    data = result 
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> GetDashboard()
+        {
+            try
+            {
+                var dashboard = await _adminService.GetAdminDashboardAsync();
+                return Ok(dashboard);
             }
             catch (Exception ex)
             {

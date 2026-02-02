@@ -9,5 +9,8 @@ namespace PulseX.Core.DTOs.Doctor
         public decimal ConsultationPrice { get; set; }
         public string? ClinicLocation { get; set; }
         public int YearsOfExperience { get; set; }
+        public bool IsApproved { get; set; }
+        public decimal AverageRating { get; set; }
+        public int TotalRatings { get; set; }
     }
 }

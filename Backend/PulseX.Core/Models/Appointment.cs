@@ -19,5 +19,6 @@ namespace PulseX.Core.Models
         public Patient Patient { get; set; } = null!;
         public Doctor Doctor { get; set; } = null!;
         public ICollection<Message> Messages { get; set; } = new List<Message>();
+        public DoctorRating? Rating { get; set; }
     }
 }

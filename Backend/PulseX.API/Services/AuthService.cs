@@ -167,6 +167,15 @@ namespace PulseX.API.Services
                 throw new Exception("Account is deactivated");
             }
 
+            // Check if doctor is approved
+            if (user.Role == UserRole.Doctor && user.Doctor != null)
+            {
+                if (!user.Doctor.IsApproved)
+                {
+                    throw new Exception("Your account is pending admin approval. Please wait for approval to access the system.");
+                }
+            }
+
             await _activityLogRepository.AddAsync(new ActivityLog
             {
                 UserId = user.Id,

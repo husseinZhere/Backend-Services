@@ -19,6 +19,7 @@ namespace PulseX.Data
         public DbSet<HealthData> HealthData { get; set; }
         public DbSet<Story> Stories { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
+        public DbSet<DoctorRating> DoctorRatings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,6 +50,7 @@ namespace PulseX.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.ConsultationPrice).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.AverageRating).HasColumnType("decimal(3,2)");
                 entity.HasOne(e => e.User)
                       .WithOne(u => u.Doctor)
                       .HasForeignKey<Doctor>(e => e.UserId)
@@ -114,6 +116,32 @@ namespace PulseX.Data
             modelBuilder.Entity<ActivityLog>(entity =>
             {
                 entity.HasKey(e => e.Id);
+            });
+
+            // DoctorRating configuration
+            modelBuilder.Entity<DoctorRating>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(e => e.Doctor)
+                      .WithMany(d => d.Ratings)
+                      .HasForeignKey(e => e.DoctorId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                      
+                entity.HasOne(e => e.Patient)
+                      .WithMany(p => p.DoctorRatings)
+                      .HasForeignKey(e => e.PatientId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                      
+                entity.HasOne(e => e.Appointment)
+                      .WithOne(a => a.Rating)
+                      .HasForeignKey<DoctorRating>(e => e.AppointmentId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                      
+                // Ensure one rating per appointment
+                entity.HasIndex(e => e.AppointmentId).IsUnique();
+                
+                // Rating must be between 1-5
+                entity.Property(e => e.Rating).IsRequired();
             });
         }
     }

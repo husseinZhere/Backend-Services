@@ -16,5 +16,6 @@ namespace PulseX.Core.Models
         public ICollection<HealthData> HealthData { get; set; } = new List<HealthData>();
         public ICollection<Message> Messages { get; set; } = new List<Message>();
         public ICollection<Story> Stories { get; set; } = new List<Story>();
+        public ICollection<DoctorRating> DoctorRatings { get; set; } = new List<DoctorRating>();
     }
 }

@@ -92,6 +92,7 @@ builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
 builder.Services.AddScoped<IHealthDataRepository, HealthDataRepository>();
 builder.Services.AddScoped<IStoryRepository, StoryRepository>();
 builder.Services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
+builder.Services.AddScoped<IDoctorRatingRepository, DoctorRatingRepository>();
 
 // Register Services
 builder.Services.AddScoped<AuthService>();
@@ -120,6 +121,46 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Seed default admin account
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        var userRepository = services.GetRequiredService<IUserRepository>();
+        
+        // Check if admin exists
+        var adminEmail = "admin@pulsex.com";
+        var adminExists = await userRepository.ExistsAsync(adminEmail);
+        
+        if (!adminExists)
+        {
+            var adminUser = new PulseX.Core.Models.User
+            {
+                Email = adminEmail,
+                PasswordHash = PulseX.API.Helpers.PasswordHelper.HashPassword("Admin@123"),
+                FullName = "System Administrator",
+                PhoneNumber = "1234567890",
+                Role = PulseX.Core.Enums.UserRole.Admin,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+            
+            await userRepository.AddAsync(adminUser);
+            Console.WriteLine("Default admin account created:");
+            Console.WriteLine($"Email: {adminEmail}");
+            Console.WriteLine("Password: Admin@123");
+            Console.WriteLine("Please change the password after first login!");
+        }
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the default admin account.");
+    }
+}
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())

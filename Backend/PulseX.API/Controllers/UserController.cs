@@ -68,5 +68,21 @@ namespace PulseX.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("dashboard")]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> GetPatientDashboard()
+        {
+            try
+            {
+                var userId = GetUserId();
+                var dashboard = await _userService.GetPatientDashboardAsync(userId);
+                return Ok(dashboard);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
