@@ -20,5 +20,12 @@ dist-ssr
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
+
+# .NET / Backend
+Backend/**/bin/
+Backend/**/obj/
+Backend/**/*.user
+Backend/.vs/
+Backend/**/.vs/
+Backend/**/Uploads/
