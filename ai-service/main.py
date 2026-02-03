@@ -13,6 +13,8 @@ from pathlib import Path
 
 from services.xray_service import XRayService
 from services.ocr_service import OCRService
+from services.chatbot_service import ChatbotService
+from pydantic import BaseModel
 
 app = FastAPI(
     title="PulseX AI Service",
@@ -32,6 +34,7 @@ app.add_middleware(
 # Initialize services
 xray_service = XRayService()
 ocr_service = OCRService()
+chatbot_service = ChatbotService()
 
 # Create upload directory if it doesn't exist
 UPLOAD_DIR = Path("uploads")
@@ -48,7 +51,8 @@ async def root():
             "health": "/health",
             "analyze_xray": "/api/xray/analyze",
             "analyze_lab_test": "/api/lab-test/analyze",
-            "get_recommendations": "/api/recommendations"
+            "get_recommendations": "/api/recommendations",
+            "chatbot": "/api/chatbot"
         }
     }
 
@@ -60,9 +64,28 @@ async def health_check():
         "status": "healthy",
         "services": {
             "xray": "active",
-            "ocr": "active"
+            "ocr": "active",
+            "chatbot": "active"
         }
     }
+
+
+# Pydantic models for request validation
+class ChatMessage(BaseModel):
+    """Chat message request model"""
+    message: str
+    user_data: dict = None
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "message": "I have chest pain and shortness of breath",
+                "user_data": {
+                    "age": 55,
+                    "bmi": 28
+                }
+            }
+        }
 
 
 @app.post("/api/xray/analyze")
@@ -175,6 +198,30 @@ async def get_recommendations(
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating recommendations: {str(e)}")
+
+
+@app.post("/api/chatbot")
+async def chatbot(chat_message: ChatMessage):
+    """
+    Heart health chatbot with medical intent validation and risk assessment
+    
+    Args:
+        chat_message: ChatMessage object containing user message and optional user data
+        
+    Returns:
+        JSON with chatbot response, risk assessment, and recommendations
+    """
+    try:
+        # Process message through chatbot service
+        result = await chatbot_service.process_message(
+            chat_message.message,
+            chat_message.user_data
+        )
+        
+        return JSONResponse(content=result)
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing chat message: {str(e)}")
 
 
 def generate_summary(risk_level: str, results: dict) -> str:
