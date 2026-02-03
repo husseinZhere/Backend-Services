@@ -7,6 +7,7 @@ AI service for medical image analysis and lab test OCR in the PulseX healthcare 
 This service provides AI-powered analysis for:
 - **Chest X-ray Analysis**: Using DenseNet121 pre-trained model for heart disease detection
 - **Lab Test OCR**: Using EasyOCR to extract and analyze medical test values
+- **Heart Health Chatbot**: Intelligent chatbot with medical intent validation and risk assessment
 - **Health Recommendations**: Smart AI-generated recommendations based on analysis results
 
 ## Features
@@ -28,6 +29,14 @@ This service provides AI-powered analysis for:
 - Unified risk level calculation
 - Smart recommendations based on multiple data sources
 
+✅ **Heart Health Chatbot**
+- Natural language processing for symptom analysis
+- Medical intent validation with guardrails
+- Heart-health domain specialization
+- Real-time risk assessment based on symptoms
+- Personalized health recommendations
+- Multi-level risk categorization (Low, Medium, High)
+
 ## Project Structure
 
 ```
@@ -35,7 +44,8 @@ ai-service/
 ├── main.py                 # FastAPI server
 ├── services/
 │   ├── xray_service.py    # X-ray analysis service (DenseNet121)
-│   └── ocr_service.py     # Lab test OCR service (EasyOCR)
+│   ├── ocr_service.py     # Lab test OCR service (EasyOCR)
+│   └── chatbot_service.py # Heart health chatbot service
 ├── models/                 # Pre-trained models directory
 ├── test_images/           # Test images for development
 ├── uploads/               # Temporary upload directory
@@ -198,6 +208,55 @@ Response:
 }
 ```
 
+#### 5. Heart Health Chatbot
+```bash
+POST /api/chatbot
+Content-Type: application/json
+```
+
+Parameters (JSON body):
+```json
+{
+  "message": "I have chest pain and shortness of breath",
+  "user_data": {
+    "age": 55,
+    "bmi": 28
+  }
+}
+```
+
+Response:
+```json
+{
+  "success": true,
+  "response": "# Heart Health Assessment Results\n\n## Risk Level: High Risk ⚠️\n...",
+  "type": "risk_assessment",
+  "risk_level": "high",
+  "risk_score": 0.78,
+  "symptoms": ["chest pain", "shortness of breath"],
+  "recommendations": [
+    "🚨 URGENT: Please seek immediate medical attention",
+    "📞 Contact your doctor or go to the emergency room",
+    ...
+  ],
+  "requires_clarification": false
+}
+```
+
+**Chatbot Features:**
+- **Medical Intent Validation**: Ensures queries are medically relevant
+- **Domain Specialization**: Focuses specifically on heart health
+- **Symptom Extraction**: Automatically identifies heart-related symptoms
+- **Risk Assessment**: Calculates cardiovascular risk based on symptoms and user data
+- **Smart Recommendations**: Provides personalized advice based on risk level
+
+**Chatbot Response Types:**
+- `non_medical`: User query is not medical-related
+- `non_heart_medical`: Medical query but not heart-related
+- `needs_more_info`: Heart-related but needs more symptom details
+- `risk_assessment`: Full risk assessment with recommendations
+- `error`: An error occurred during processing
+
 ### Testing with cURL
 
 **X-ray Analysis:**
@@ -220,6 +279,20 @@ curl -X POST "http://localhost:8000/api/recommendations" \
   -H "accept: application/json" \
   -F "xray_file=@test_images/chest_xray.jpg" \
   -F "lab_test_file=@test_images/lab_test.jpg"
+```
+
+**Heart Health Chatbot:**
+```bash
+curl -X POST "http://localhost:8000/api/chatbot" \
+  -H "accept: application/json" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "I have chest pain and high blood pressure",
+    "user_data": {
+      "age": 60,
+      "bmi": 32
+    }
+  }'
 ```
 
 ### Interactive API Documentation
