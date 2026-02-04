@@ -26,7 +26,6 @@ def check_dependencies():
         'uvicorn',
         'torch',
         'torchvision',
-        'easyocr',
         'PIL',
         'numpy'
     ]
@@ -57,10 +56,10 @@ def test_imports():
         return False
     
     try:
-        from services.ocr_service import OCRService
-        print("✅ OCRService")
+        from services.chatbot_service import ChatbotService
+        print("✅ ChatbotService")
     except Exception as e:
-        print(f"❌ OCRService: {str(e)}")
+        print(f"❌ ChatbotService: {str(e)}")
         return False
     
     return True
