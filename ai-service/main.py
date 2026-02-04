@@ -108,7 +108,9 @@ async def analyze_xray(file: UploadFile = File(...)):
         with open(temp_path, "wb") as buffer:
             buffer.write(image_bytes)
         
-        result = xray_service.analyze_xray(image_bytes, file.filename)
+        # Run synchronous ML inference in thread pool to avoid blocking event loop
+        import asyncio
+        result = await asyncio.to_thread(xray_service.analyze_xray, image_bytes, file.filename)
         
         if temp_path.exists():
             temp_path.unlink()
