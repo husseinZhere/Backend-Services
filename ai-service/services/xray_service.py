@@ -22,30 +22,36 @@ class XRayService:
     def _load_model(self):
         """Load trained binary classifier"""
         try:
-            model = models.resnet50(pretrained=False)
+            model = models.resnet50(weights=None)
             
-            # Same architecture as training
+            # Enhanced architecture matching train_enhanced.py (1024→512→256→2)
             model.fc = nn.Sequential(
                 nn.Dropout(0.5),
-                nn.Linear(model.fc.in_features, 512),
+                nn.Linear(model.fc.in_features, 1024),  # Updated to 1024
+                nn.ReLU(),
+                nn.BatchNorm1d(1024),
+                nn.Dropout(0.4),
+                nn.Linear(1024, 512),  # Updated from 512 to 1024 input
                 nn.ReLU(),
                 nn.BatchNorm1d(512),
-                nn.Dropout(0.4),
-                nn.Linear(512, 256),
+                nn.Dropout(0.3),
+                nn.Linear(512, 256),  # Updated from 256 to 512 input
                 nn.ReLU(),
                 nn.BatchNorm1d(256),
-                nn.Dropout(0.3),
+                nn.Dropout(0.2),  # Added extra dropout
                 nn.Linear(256, 2)
             )
             
             model_path = Path(__file__).parent.parent / 'models' / 'xray_binary_model.pth'
             
             if model_path.exists():
-                state_dict = torch.load(model_path, map_location=self.device)
+                state_dict = torch.load(model_path, map_location=self.device, weights_only=True)
                 model.load_state_dict(state_dict)
                 print(f"✅ Trained model loaded from {model_path}")
             else:
-                raise FileNotFoundError(f"Model not found at {model_path}")
+                print(f"⚠️  Model not found at {model_path}")
+                print(f"   Run 'python3 create_model.py' to generate the model")
+                raise FileNotFoundError(f"Model file missing. Please run: python3 create_model.py")
             
             model = model.to(self.device)
             model.eval()
@@ -53,6 +59,8 @@ class XRayService:
             
         except Exception as e:
             print(f"❌ Error loading model: {e}")
+            print(f"   Hint: Make sure models/xray_binary_model.pth exists")
+            print(f"   Run: python3 create_model.py")
             raise
     
     def _load_metadata(self):

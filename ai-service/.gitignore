@@ -27,10 +27,10 @@ ENV/
 .venv
 
 # PyTorch Models
-*.pth
-*.pt
-models/*.pth
-models/*.pt
+# *.pth
+# *.pt
+# models/*.pth
+# models/*.pt
 
 # Uploads and Test Images
 uploads/
