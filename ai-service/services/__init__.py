@@ -3,6 +3,6 @@ PulseX AI Services Module
 """
 
 from .xray_service import XRayService
-from .ocr_service import OCRService
+from .chatbot_service import ChatbotService
 
-__all__ = ['XRayService', 'OCRService']
+__all__ = ['XRayService', 'ChatbotService']
