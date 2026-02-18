@@ -4,6 +4,8 @@
 
 A complete, production-ready ASP.NET Core Web API backend for the PulseX graduation project.
 
+> **📁 Note**: All backend services are now organized in the `Backend/` folder for better project structure.
+
 ---
 
 ## 📊 Project Statistics
@@ -115,7 +117,7 @@ A complete, production-ready ASP.NET Core Web API backend for the PulseX graduat
 ### 3-Layer Architecture
 ```
 ┌─────────────────────────────────────┐
-│         PulseX.API                  │
+│      Backend/PulseX.API             │
 │   (Controllers & API Endpoints)     │
 │   - HTTP Request/Response handling  │
 │   - Authorization & Authentication  │
@@ -130,7 +132,7 @@ A complete, production-ready ASP.NET Core Web API backend for the PulseX graduat
 └──────────────┬──────────────────────┘
                │
 ┌──────────────▼──────────────────────┐
-│         PulseX.Data                 │
+│      Backend/PulseX.Data            │
 │   (Repositories & Data Access)      │
 │   - Database operations             │
 │   - EF Core queries                 │
@@ -257,8 +259,8 @@ A complete, production-ready ASP.NET Core Web API backend for the PulseX graduat
 ### Quick Start (5 Minutes)
 ```bash
 # 1. Clone repository
-git clone https://github.com/husseinZhere/Backend-Services.git
-cd Backend-Services/Backend
+git clone https://github.com/nouran-Omar/project_graduation_frist_step.git
+cd project_graduation_frist_step/Backend
 
 # 2. Update appsettings.json with your database connection
 

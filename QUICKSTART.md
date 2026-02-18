@@ -13,8 +13,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/husseinZhere/Backend-Services.git
-cd Backend-Services/Backend
+git clone https://github.com/nouran-Omar/project_graduation_frist_step.git
+cd project_graduation_frist_step/Backend
 
 # Restore dependencies
 dotnet restore
@@ -27,7 +27,7 @@ dotnet build
 
 1. **Option A - Using SQL Server Express**
    
-   Edit `PulseX.API/appsettings.json`:
+   Edit `Backend/PulseX.API/appsettings.json`:
    ```json
    "ConnectionStrings": {
      "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=PulseXDb;Trusted_Connection=True;TrustServerCertificate=True;"
@@ -36,7 +36,7 @@ dotnet build
 
 2. **Option B - Using LocalDB**
    
-   Edit `PulseX.API/appsettings.json`:
+   Edit `Backend/PulseX.API/appsettings.json`:
    ```json
    "ConnectionStrings": {
      "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=PulseXDb;Trusted_Connection=True;TrustServerCertificate=True;"
@@ -46,14 +46,14 @@ dotnet build
 ### Step 4: Create Database
 
 ```bash
-cd PulseX.Data
+cd Backend/PulseX.Data
 dotnet ef database update --startup-project ../PulseX.API/PulseX.API.csproj
 ```
 
 ### Step 5: Run the API
 
 ```bash
-cd ../PulseX.API
+cd Backend/PulseX.API
 dotnet run
 ```
 

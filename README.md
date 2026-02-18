@@ -8,10 +8,12 @@ PulseX is a health management system that connects patients with doctors, manage
 
 ## 🏗️ Architecture
 
-### 3-Layer Architecture
-- **PulseX.API**: Controllers and API endpoints
-- **PulseX.Core**: Domain models, DTOs, interfaces, and enums
-- **PulseX.Data**: Database context, repositories, and data access
+### Project Structure
+All backend services are now organized in the `Backend/` folder:
+- **Backend/PulseX.API**: Controllers and API endpoints
+- **Backend/PulseX.Core**: Domain models, DTOs, interfaces, and enums
+- **Backend/PulseX.Data**: Database context, repositories, and data access
+- **Backend/ai-service**: Python AI service for chatbot and X-ray analysis
 
 ### Design Patterns
 - **Repository Pattern**: Data access abstraction
@@ -105,13 +107,13 @@ PulseX is a health management system that connects patients with doctors, manage
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/husseinZhere/Backend-Services.git
-   cd Backend-Services/Backend
+   git clone https://github.com/nouran-Omar/project_graduation_frist_step.git
+   cd project_graduation_frist_step/Backend
    ```
 
 2. **Update Database Connection String**
    
-   Edit `PulseX.API/appsettings.json`:
+   Edit `Backend/PulseX.API/appsettings.json`:
    ```json
    "ConnectionStrings": {
      "DefaultConnection": "Server=YOUR_SERVER;Database=PulseXDb;Trusted_Connection=True;TrustServerCertificate=True;"
@@ -120,13 +122,13 @@ PulseX is a health management system that connects patients with doctors, manage
 
 3. **Apply Database Migrations**
    ```bash
-   cd PulseX.Data
+   cd Backend/PulseX.Data
    dotnet ef database update --startup-project ../PulseX.API/PulseX.API.csproj
    ```
 
 4. **Run the Application**
    ```bash
-   cd ../PulseX.API
+   cd Backend/PulseX.API
    dotnet run
    ```
 
